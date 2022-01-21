@@ -1,35 +1,28 @@
 ﻿using Comrade.Core.Bases.Interfaces;
-using Comrade.Core.Bases.Validations;
+using Comrade.Core.Bases.Results;
+using Comrade.Domain.Bases;
 using Comrade.Domain.Models;
 
 namespace Comrade.Core.AirplaneCore.Validations;
 
-public class AirplaneEditValidation : EntityValidation<Airplane>
+public class AirplaneEditValidation : IAirplaneEditValidation
 {
-    private readonly AirplaneValidateSameCode _airplaneValidateSameCode;
+    private readonly IAirplaneCodeUniqueValidation _airplaneCodeUniqueValidation;
 
-    public AirplaneEditValidation(IAirplaneRepository repository,
-        AirplaneValidateSameCode airplaneValidateSameCode)
-        : base(repository)
+    public AirplaneEditValidation(IAirplaneCodeUniqueValidation airplaneCodeUniqueValidation)
     {
-        _airplaneValidateSameCode = airplaneValidateSameCode;
+        _airplaneCodeUniqueValidation = airplaneCodeUniqueValidation;
     }
 
-    public async Task<ISingleResult<Airplane>> Execute(Airplane entity)
+    public async Task<ISingleResult<Entity>> Execute(Airplane entity, Airplane? recordExists)
     {
-        var recordExists = await RecordExists(entity.Id).ConfigureAwait(false);
-        if (!recordExists.Success)
-        {
-            return recordExists;
-        }
-
         var registerSameCode =
-            await _airplaneValidateSameCode.Execute(entity).ConfigureAwait(false);
+            await _airplaneCodeUniqueValidation.Execute(entity).ConfigureAwait(false);
         if (!registerSameCode.Success)
         {
             return registerSameCode;
         }
 
-        return recordExists;
+        return new SingleResult<Entity>(recordExists);
     }
 }

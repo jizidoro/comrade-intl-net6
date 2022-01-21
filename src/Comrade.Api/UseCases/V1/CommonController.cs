@@ -2,7 +2,7 @@
 using Comrade.Api.Modules.Common.FeatureFlags;
 using Comrade.Application.Bases;
 using Comrade.Application.Lookups;
-using Comrade.Application.Services.SystemUserServices.Queries;
+using Comrade.Application.Services.SystemUserComponent.Queries;
 using Comrade.Domain.Models;
 using Microsoft.AspNetCore.Http;
 
@@ -40,6 +40,7 @@ public class CommonController : Controller
             return Ok(new SingleResultDto<EntityDto>(e));
         }
     }
+
 
     [HttpGet("lookup-predicate-system-user-by-name/{name}")]
     [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.List))]

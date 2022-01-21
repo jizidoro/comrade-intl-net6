@@ -1,22 +1,29 @@
 ﻿using Comrade.Core.Bases.Interfaces;
-using Comrade.Core.Bases.Validations;
+using Comrade.Core.Bases.Results;
+using Comrade.Domain.Bases;
 using Comrade.Domain.Models;
 
 namespace Comrade.Core.AirplaneCore.Validations;
 
-public class AirplaneCreateValidation : EntityValidation<Airplane>
+public class AirplaneCreateValidation : IAirplaneCreateValidation
 {
-    private readonly AirplaneValidateSameCode _airplaneValidateSameCode;
+    private readonly IAirplaneCodeUniqueValidation _airplaneCodeUniqueValidation;
 
     public AirplaneCreateValidation(IAirplaneRepository repository,
-        AirplaneValidateSameCode airplaneValidateSameCode)
-        : base(repository)
+        IAirplaneCodeUniqueValidation airplaneCodeUniqueValidation)
     {
-        _airplaneValidateSameCode = airplaneValidateSameCode;
+        _airplaneCodeUniqueValidation = airplaneCodeUniqueValidation;
     }
 
-    public async Task<ISingleResult<Airplane>> Execute(Airplane entity)
+    public async Task<ISingleResult<Entity>> Execute(Airplane entity)
     {
-        return await _airplaneValidateSameCode.Execute(entity).ConfigureAwait(false);
+        var registerSameCode =
+            await _airplaneCodeUniqueValidation.Execute(entity).ConfigureAwait(false);
+        if (!registerSameCode.Success)
+        {
+            return registerSameCode;
+        }
+
+        return new SingleResult<Entity>(entity);
     }
 }
