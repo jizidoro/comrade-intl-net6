@@ -1,4 +1,7 @@
 ﻿using System;
+using Comrade.Application.Caches;
+using Comrade.Application.Caches.FunctionCache;
+using Comrade.Application.Notifications.Email;
 using Comrade.Persistence.DataAccess;
 using Comrade.UnitTests.Helpers;
 using MediatR;
@@ -9,7 +12,7 @@ using MongoDB.Driver;
 
 namespace Comrade.IntegrationTests;
 
-public class ServiceProviderFixture : IDisposable
+public sealed class ServiceProviderFixture : IDisposable
 {
     public ServiceProviderFixture()
     {
@@ -24,7 +27,7 @@ public class ServiceProviderFixture : IDisposable
                 {
                     ["MongoDbContextSettings:ConnectionString"] = "mongodb://localhost/local",
                     ["MongoDbContextSettings:DatabaseName"] = dbName
-                })
+                }!)
             .Build();
 
 
@@ -42,13 +45,28 @@ public class ServiceProviderFixture : IDisposable
         serviceCollection.AddSingleton<IMongoDbContextSettings>(x =>
             x.GetRequiredService<IOptions<MongoDbContextSettings>>().Value);
 
+            serviceCollection.Configure<MailKitSettings>(
+                configuration.GetSection(nameof(MailKitSettings)));
+
+            serviceCollection.AddSingleton<IMailKitSettings>(sp =>
+                sp.GetRequiredService<IOptions<MailKitSettings>>().Value);
+
+        serviceCollection.AddSingleton<IRedisCacheService, RedisCacheService>();
+        serviceCollection.AddSingleton<IRedisCacheFunctionService, RedisCacheFunctionService>();
+        serviceCollection.AddStackExchangeRedisCache(options =>
+        {
+            options.InstanceName = "TesteSistema";
+            options.Configuration = "localhost:6379";
+        });
+
         var sp = serviceCollection.BuildServiceProvider();
         Sp = sp;
         Mediator = sp.GetRequiredService<IMediator>();
+        RedisCacheFunctionService = sp.GetRequiredService<IRedisCacheFunctionService>();
         SqlContextFixture = sp.GetService<ComradeContext>()!;
         var mongoDbContextSettings = new MongoDbContextSettings
         {
-            ConnectionString = connString,
+            ConnectionString = connString!,
             DatabaseName = dbName
         };
         MongoDbContextFixtureSettings = mongoDbContextSettings;
@@ -57,6 +75,7 @@ public class ServiceProviderFixture : IDisposable
 
     public IServiceProvider Sp { get; }
     public IMediator Mediator { get; }
+    public IRedisCacheFunctionService RedisCacheFunctionService { get; }
     public ComradeContext SqlContextFixture { get; }
     public MongoDbContextSettings MongoDbContextFixtureSettings { get; }
     public MongoDbContext MongoDbContextFixture { get; }

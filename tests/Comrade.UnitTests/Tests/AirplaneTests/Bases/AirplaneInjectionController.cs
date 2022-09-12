@@ -1,4 +1,4 @@
-﻿using Comrade.Api.UseCases.V1.AirplaneApi;
+﻿using Comrade.Api.Controllers.V1.AirplaneApi;
 using Comrade.Persistence.DataAccess;
 using Comrade.UnitTests.Helpers;
 using MediatR;
@@ -7,6 +7,7 @@ namespace Comrade.UnitTests.Tests.AirplaneTests.Bases;
 
 public class AirplaneInjectionController
 {
+    protected AirplaneInjectionController(){}
     public static AirplaneController GetAirplaneController(ComradeContext context,
         MongoDbContext mongoDbContextFixture, IMediator mediator)
     {

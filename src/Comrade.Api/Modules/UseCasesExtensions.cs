@@ -1,13 +1,20 @@
 using Comrade.Application.Bases;
-using Comrade.Application.Services.AirplaneComponent.Commands;
-using Comrade.Application.Services.AirplaneComponent.Dtos;
-using Comrade.Application.Services.AirplaneComponent.Handlers;
-using Comrade.Application.Services.AirplaneComponent.Queries;
-using Comrade.Application.Services.AuthenticationComponent.Commands;
-using Comrade.Application.Services.SystemUserComponent.Commands;
-using Comrade.Application.Services.SystemUserComponent.Dtos;
-using Comrade.Application.Services.SystemUserComponent.Handlers;
-using Comrade.Application.Services.SystemUserComponent.Queries;
+using Comrade.Application.Caches;
+using Comrade.Application.Caches.FunctionCache;
+using Comrade.Application.Components.AirplaneComponent.Commands;
+using Comrade.Application.Components.AirplaneComponent.Contracts;
+using Comrade.Application.Components.AirplaneComponent.Handlers;
+using Comrade.Application.Components.AirplaneComponent.Queries;
+using Comrade.Application.Components.AuthenticationComponent.Commands;
+using Comrade.Application.Components.FunctionComponent.Queries;
+using Comrade.Application.Components.SystemMenuComponent.Commands;
+using Comrade.Application.Components.SystemMenuComponent.Contracts;
+using Comrade.Application.Components.SystemMenuComponent.Handlers;
+using Comrade.Application.Components.SystemMenuComponent.Queries;
+using Comrade.Application.Components.SystemUserComponent.Commands;
+using Comrade.Application.Components.SystemUserComponent.Contracts;
+using Comrade.Application.Components.SystemUserComponent.Handlers;
+using Comrade.Application.Components.SystemUserComponent.Queries;
 using Comrade.Core.AirplaneCore;
 using Comrade.Core.AirplaneCore.Commands;
 using Comrade.Core.AirplaneCore.Handlers;
@@ -19,6 +26,11 @@ using Comrade.Core.SecurityCore.Commands;
 using Comrade.Core.SecurityCore.Handlers;
 using Comrade.Core.SecurityCore.UseCases;
 using Comrade.Core.SecurityCore.Validation;
+using Comrade.Core.SystemMenuCore;
+using Comrade.Core.SystemMenuCore.Commands;
+using Comrade.Core.SystemMenuCore.Handlers;
+using Comrade.Core.SystemMenuCore.UseCases;
+using Comrade.Core.SystemMenuCore.Validations;
 using Comrade.Core.SystemUserCore;
 using Comrade.Core.SystemUserCore.Commands;
 using Comrade.Core.SystemUserCore.Handlers;
@@ -141,6 +153,53 @@ public static class UseCasesExtensions
         services.AddScoped<ISystemUserEditValidation, SystemUserEditValidation>();
         services.AddScoped<ISystemUserDeleteValidation, SystemUserDeleteValidation>();
         services.AddScoped<ISystemUserCreateValidation, SystemUserCreateValidation>();
+
+        #endregion
+
+        #region SystemMenu
+
+        // Application - Services
+        services.AddScoped<ISystemMenuCommand, SystemMenuCommand>();
+        services.AddScoped<ISystemMenuQuery, SystemMenuQuery>();
+
+        // Application - Handlers
+        services
+            .AddScoped<IRequestHandler<SystemMenuCreateDto, SingleResultDto<EntityDto>>,
+                SystemMenuCreateHandler>();
+        services
+            .AddScoped<IRequestHandler<SystemMenuEditDto, SingleResultDto<EntityDto>>,
+                SystemMenuEditHandler>();
+
+        // Core - UseCases
+        services.AddScoped<IUcSystemMenuEdit, UcSystemMenuEdit>();
+        services.AddScoped<IUcSystemMenuCreate, UcSystemMenuCreate>();
+        services.AddScoped<IUcSystemMenuDelete, UcSystemMenuDelete>();
+
+        // Core - CoreHandlers
+        services
+            .AddScoped<IRequestHandler<SystemMenuCreateCommand, ISingleResult<Entity>>,
+                SystemMenuCreateCoreHandler>();
+        services
+            .AddScoped<IRequestHandler<SystemMenuDeleteCommand, ISingleResult<Entity>>,
+                SystemMenuDeleteCoreHandler>();
+        services
+            .AddScoped<IRequestHandler<SystemMenuEditCommand, ISingleResult<Entity>>,
+                SystemMenuEditCoreHandler>();
+
+        // Core - Validations
+        services.AddScoped<ISystemMenuCreateValidation, SystemMenuCreateValidation>();
+        services.AddScoped<ISystemMenuEditValidation, SystemMenuEditValidation>();
+        services.AddScoped<SystemMenuDeleteValidation>();
+        services.AddScoped<ISystemMenuUniqueValidation, SystemMenuUniqueValidation>();
+        
+        #endregion
+
+        #region Alticci
+
+        // Application - Services
+        services.AddScoped<IAlticciQuery, AlticciQuery>();
+        services.AddScoped<IRedisCacheService, RedisCacheService>();
+        services.AddScoped<IRedisCacheFunctionService, RedisCacheFunctionService>();
 
         #endregion
 

@@ -106,6 +106,15 @@ namespace Comrade.Application.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notificação - Mosele Software Consulting.
+        /// </summary>
+        public static string NOTIFICATION_DEFAULT_NAME {
+            get {
+                return ResourceManager.GetString("NOTIFICATION_DEFAULT_NAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to O campo {PropertyName} precisa ter {MaxLength} caracteres..
         /// </summary>
         public static string TAMANHO_ESPECIFICO_CAMPO {
@@ -120,6 +129,15 @@ namespace Comrade.Application.Messages {
         public static string TAMANHO_INTERVALO_CAMPO {
             get {
                 return ResourceManager.GetString("TAMANHO_INTERVALO_CAMPO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A url informada é inválida..
+        /// </summary>
+        public static string URL_INVALIDA {
+            get {
+                return ResourceManager.GetString("URL_INVALIDA", resourceCulture);
             }
         }
     }

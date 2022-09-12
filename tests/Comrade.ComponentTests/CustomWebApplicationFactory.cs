@@ -19,6 +19,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Startup>
                         ["AllowedHosts"] = "*",
                         ["FeatureManagement:Airplane"] = "true",
                         ["FeatureManagement:SystemUser"] = "true",
+                        ["FeatureManagement:SystemMenu"] = "true",
                         ["FeatureManagement:Common"] = "true",
                         ["FeatureManagement:HealthChecks"] = "false",
                         ["FeatureManagement:Swagger"] = "true",
@@ -26,7 +27,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Startup>
                         ["FeatureManagement:SQLServer"] = "false",
                         ["FeatureManagement:PostgresSql"] = "false",
                         ["FeatureManagement:InjectInitialData"] = "true"
-                    });
+                    }!);
             });
     }
 }
