@@ -15,19 +15,21 @@ public sealed class SystemMenuControllerCreateDuplicatedMenuErrorTests : IClassF
     {
         _fixture = fixture;
     }
-    
+
     [Fact]
     public async Task SystemMenuController_CreateDuplicatedMenu_Error()
     {
         var menu1 = new SystemMenu
         {
-            Text = "Menu",
+            Title = "Menu",
+            Icon = "home",
             Description = "Descrição do menu",
             Route = ""
         };
         var menu2 = new SystemMenuCreateDto
         {
-            Text = "Menu",
+            Title = "Menu",
+            Icon = "home",
             Description = "Descrição do menu",
             Route = ""
         };

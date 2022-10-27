@@ -16,6 +16,7 @@ public sealed class SystemMenuControllerCreateSubmenuTests : IClassFixture<Servi
     {
         _fixture = fixture;
     }
+
     [Fact]
     public async Task SystemMenuController_CreateSubmenu()
     {
@@ -23,13 +24,15 @@ public sealed class SystemMenuControllerCreateSubmenuTests : IClassFixture<Servi
         var menu = new SystemMenu
         {
             Id = Guid.NewGuid(),
-            Text = "Menu",
+            Title = "Menu",
+            Icon = "home",
             Description = "Descrição do menu",
             Route = ""
         };
         var subMenu = new SystemMenuCreateDto
         {
-            Text = "Submenu",
+            Title = "Submenu",
+            Icon = "home",
             Description = "Descrição do submenu",
             Route = ""
         };
@@ -48,6 +51,7 @@ public sealed class SystemMenuControllerCreateSubmenuTests : IClassFixture<Servi
             Assert.NotNull(actualResultFilho);
             Assert.Equal(201, actualResultFilho?.Code);
         }
+
         var subMenus = repository.GetAll()
             .Where(x => x.MenuId == menu.Id);
         Assert.NotNull(subMenus);

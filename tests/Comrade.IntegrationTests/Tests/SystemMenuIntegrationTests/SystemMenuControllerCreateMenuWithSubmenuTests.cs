@@ -13,13 +13,14 @@ public sealed class SystemMenuControllerCreateMenuWithSubmenuTests : IClassFixtu
     {
         _fixture = fixture;
     }
-    
+
     [Fact]
     public async Task SystemMenuController_CreateMenuWithSubmenu()
     {
         var menu = new SystemMenuCreateDto
         {
-            Text = "Teste",
+            Title = "Teste",
+            Icon = "icon",
             Description = "Descrição do menu",
             Route = "",
             Submenus = new List<SystemMenuCreateDto>()
@@ -27,9 +28,10 @@ public sealed class SystemMenuControllerCreateMenuWithSubmenuTests : IClassFixtu
 
         var subMenu = new SystemMenuCreateDto
         {
-            Text = "Teste 2",
+            Title = "Teste",
+            Icon = "icon",
             Description = "Descrição do menu 2",
-            Route = "",
+            Route = ""
         };
         menu.Submenus.Add(subMenu);
         var systemMenuController =

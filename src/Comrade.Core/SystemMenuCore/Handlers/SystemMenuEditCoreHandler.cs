@@ -1,21 +1,21 @@
 ﻿using System.Threading;
-using Comrade.Core.SystemMenuCore.Commands;
 using Comrade.Core.Bases.Interfaces;
 using Comrade.Core.Bases.Results;
 using Comrade.Core.Messages;
+using Comrade.Core.SystemMenuCore.Commands;
+using Comrade.Core.SystemMenuCore.Validations;
 using Comrade.Domain.Bases;
 using Comrade.Domain.Models;
 using MediatR;
-using Comrade.Core.SystemMenuCore.Validations;
 
 namespace Comrade.Core.SystemMenuCore.Handlers;
 
 public class
     SystemMenuEditCoreHandler : IRequestHandler<SystemMenuEditCommand, ISingleResult<Entity>>
 {
-    private readonly ISystemMenuEditValidation _systemMenuEditValidation;
     private readonly IMongoDbCommandContext _mongoDbContext;
     private readonly ISystemMenuRepository _repository;
+    private readonly ISystemMenuEditValidation _systemMenuEditValidation;
 
     public SystemMenuEditCoreHandler(ISystemMenuEditValidation systemMenuEditValidation,
         ISystemMenuRepository repository, IMongoDbCommandContext mongoDbContext)
@@ -62,6 +62,7 @@ public class
         target.Description = source.Description;
         target.Menu = source.Menu;
         target.Route = source.Route;
-        target.Text = source.Text;
+        target.Title = source.Title;
+        target.Icon = source.Icon?.Trim().ToLower(CultureInfo.CurrentCulture);
     }
 }

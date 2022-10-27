@@ -21,23 +21,25 @@ public class SystemMenuRepository : Repository<SystemMenu>, ISystemMenuRepositor
                    throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<ISingleResult<Entity>> CodeUniqueValidation(Guid? menuId, string text)
+    public async Task<ISingleResult<Entity>> UniqueValidation(SystemMenu entity)
     {
-        var exists = await _context.SystemMenus
-            .Where(p => p.MenuId == menuId && p.Text == text)
-            .AnyAsync().ConfigureAwait(false);
+        var query = from menu in _context.SystemMenus
+            where menu.Id != entity.Id && IsRouteEquals(menu.Route, entity.Route)
+            select menu;
+
+        var exists = query.Any();
 
         return exists
-            ? new SingleResult<Entity>((int) EnumResponse.ErrorBusinessValidation,
-                BusinessMessage.MSG20)
+            ? new SingleResult<Entity>((int) EnumResponse.ErrorBusinessValidation, BusinessMessage.MSG20)
             : new SingleResult<Entity>();
     }
-    
+
     public IQueryable<SystemMenu> GetAllMenus()
     {
         return _context.SystemMenus
             .Where(sm => sm.MenuId == null);
     }
+
     public override void Remove(Guid id)
     {
         var subMenus = _context.SystemMenus
@@ -47,5 +49,10 @@ public class SystemMenuRepository : Repository<SystemMenu>, ISystemMenuRepositor
 
         base.RemoveAll(subMenus);
         base.Remove(id);
+    }
+
+    private static bool IsRouteEquals(string? route, string? incomingRoute)
+    {
+        return route != null && incomingRoute != null && Equals(route.Trim(), incomingRoute.Trim());
     }
 }
